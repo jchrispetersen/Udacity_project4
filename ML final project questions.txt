@@ -1,0 +1,40 @@
+Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]
+
+-The goal of this project is to come up with a machine learning algorithm that can help an investigator identify "Persons of Interest" in the Enron fraud case.  Machine learning is useful in trying to accomplish this task because it allows for the classification of multiple data points quickly and efficiently.  The dataset I am using is from the fraud case against Enron, as it was entered into public record, which includes financial and email information for many Enron employees.  There were a couple of outliers in my data, the first of which was the total entry, which was removed.  There was also an individual with all NaN values, so he was removed as well.  There was also a company, which was left alone in case the company was implicated somehow.  A few of our POIs presented as outliers due to the vast financial reward they were reaping, but they were left in as well.  
+
+
+What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
+
+
+-['poi', 'salary', 'bonus', 'deferred_income', 'total_stock_value', 'exercised_stock_options', 'long_term_incentive', 'has_expenses', 'has_other', 'fraction_to_poi', 'total_beso', 'num_millions'] were the features I chose to use based on my SelectKBest output.  The final 5 features were all ones that I created, the first 2 were binary fields based on whether a numeric value existed in that field, there were a total of 4 features like that I created, my thought process for creating these features was that while I was investigating my data, I saw that my POIs all had values for these fields, while some non-POIs did not have data here, so at the very least these features should be able to be used to reduce false positives.  The other 3 were pretty close to what I had done in the lessons leading up to this project.  I did not need to do any scaling, as the models I chose (naive bayes, decision trees, random forrest, and adaBoost) do not require any feature scaling.  
+To select my K value, I methodically ran through different values with my chosen model (Naive Bayes) from 2 -15, and found that 11 was what I wanted to move forward with.  
+k	Acc	Prec	Recall
+1	84	47	22
+3	83	45	30
+5	85	54	29
+7	84	40	31
+9	84	40	31
+10	87	52	46
+11	87	52	46
+12	86	48	37
+13	85	45	37
+14	83	36	33
+15	83	36	33
+
+
+What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
+- I ended up going with the naive bayes.  I tried a naive bayes, random forest, adaBoost, and decision tree.  The differences were more apparent than I thought they would be, I ended up with the highest in terms of accuracy, but it was the recall and precision that really put me over the top in chosing this one.  
+
+What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
+-Tuning the parameters of an algorithm is the process of predefining the parameters that can't be learned directly from the training process.  My tuning process was done through my model selection process, where I modified parameters in the random forest such as min_sample_split, n_estimator, min_sample_leaf and random_state to try get the best performance before my model was selected. My final model did not need to be tuned as there were no parameters to tune.    
+
+What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric items: “discuss validation”, “validation strategy”]
+-Validation is how one tests their model and it's ability to make decisions as expected.  A classic mistake is to fit your model to the entirety of your data, and not withhold a testing portion, this can cause your model to look like it is going to be effective, but it will simply be overfit to the training data and may not provide any of the insights you need on unseen data.  I fell into this trap during my first attempt and based on my using of the testing script and the StratifiedShuffleSplit fuction to create my training and testing data, I found that a different model was a better fit and vastly improved my results.  
+
+Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
+-The evaluation metrics I used were precision and recall.  The precision I was getting was .8733, and the recall was .46.  
+The precision represents true positives(correctly identified POIs)/(true positives(correctly identified POIs)+false positives(non-POIs incorrectly labeled as POIs)).  
+The recall represents true positives(correctly identified POIs)/(true positives(correctly identified POIs)+false negatives(POIs incorrectly labeled as non-POIs))
+
+
+“I hereby confirm that this submission is my work. I have cited above the origins of any parts of the submission that were taken from Websites, books, forums, blog posts, github repositories, etc
